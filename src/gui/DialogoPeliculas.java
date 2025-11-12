@@ -7,6 +7,8 @@ import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 public class DialogoPeliculas extends JDialog {
+	
+	private static final long serialVersionUID = 1L;
 	private JTextField txtBusqueda;
 	private JButton btnAgregar;
     private JButton btnEditar;
@@ -43,10 +45,8 @@ public class DialogoPeliculas extends JDialog {
         JPanel panelCentral = new JPanel(new BorderLayout());
         panelCentral.setBorder(BorderFactory.createTitledBorder("Lista de Películas"));
         
-        JLabel lblPlaceholder = new JLabel("Aquí irá la JTable personalizada con las películas", 
-                JLabel.CENTER);
-        lblPlaceholder.setForeground(Color.GRAY);
-        panelCentral.add(lblPlaceholder, BorderLayout.CENTER);
+        JTable tablaPeliculas = new JTable();
+        panelCentral.add(tablaPeliculas, BorderLayout.CENTER);
     	
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnEditar = new JButton("Editar");
