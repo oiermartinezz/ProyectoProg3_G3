@@ -5,23 +5,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-// Corregido: VenatanaPrincipal -> VentanaPrincipal
+
 public class VentanaPrincipal extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    // --- Atributos de la clase ---
+  
     private JPanel panelPrincipal;
     private JLabel lblEstado;
 
-    // Botones (ahora como atributos para poder (des)habilitarlos)
+    
     private JButton btnPeliculas;
     private JButton btnSalas;
     private JButton btnVentas;
     private JButton btnReportes;
-    private JButton btnInicioSesion; // Nuevo botón
+    private JButton btnInicioSesion; 
 
-    private String usuarioLogueado = null; // Para guardar el nombre del usuario
+    private String usuarioLogueado = null; //esto es para guardar el usuario cuando mete el nombre y apellido en inicio de sesion
 
     public VentanaPrincipal() {
         configurarVentana();
@@ -40,11 +40,10 @@ public class VentanaPrincipal extends JFrame {
     private void inicializarComponentes() {
         panelPrincipal = new JPanel(new BorderLayout());
         
-        // --- 1. Panel de Cabecera (Norte) ---
         JPanel panelHeader = new JPanel(new BorderLayout());
-        panelHeader.setBackground(new Color(41, 128, 185)); // Fondo azul
+        panelHeader.setBackground(new Color(41, 128, 185)); 
 
-        // Título
+       
         JLabel lblTitulo = new JLabel("CINEMANAGER");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 24));
         lblTitulo.setForeground(Color.WHITE);
@@ -52,18 +51,18 @@ public class VentanaPrincipal extends JFrame {
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         panelHeader.add(lblTitulo, BorderLayout.NORTH);
 
-        // Panel para los botones del header
+        // panel para el header
         JPanel panelBotonesHeader = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        panelBotonesHeader.setOpaque(false); // Hacemos transparente para ver fondo azul
+        panelBotonesHeader.setOpaque(false); 
 
-        // Creamos los botones
+        //BOTONES HEADER
         btnInicioSesion = crearBoton("Iniciar Sesión", new Color(243, 156, 18)); // Naranja
         btnPeliculas = crearBoton("Gestión de Películas", new Color(52, 152, 219));
         btnSalas = crearBoton("Gestión de Salas", new Color(46, 204, 113));
         btnVentas = crearBoton("Venta de Entradas", new Color(231, 76, 60));
         btnReportes = crearBoton("Reportes", new Color(155, 89, 182));
 
-        // Añadimos botones al panel de botones
+        
         panelBotonesHeader.add(btnInicioSesion);
         panelBotonesHeader.add(btnPeliculas);
         panelBotonesHeader.add(btnSalas);
@@ -73,12 +72,11 @@ public class VentanaPrincipal extends JFrame {
         panelHeader.add(panelBotonesHeader, BorderLayout.CENTER);
         panelPrincipal.add(panelHeader, BorderLayout.NORTH);
 
-        // --- 2. Panel Central (Slideshow) ---
-        // Aquí usamos la clase que creamos en el paso 1
+      
         PanelFotos panelSlideshow = new PanelFotos();
         panelPrincipal.add(panelSlideshow, BorderLayout.CENTER);
 
-        // --- 3. Panel de Estado (Sur) ---
+     
         JPanel panelEstado = new JPanel(new FlowLayout(FlowLayout.LEFT));
         panelEstado.setBackground(Color.LIGHT_GRAY);
         panelEstado.setPreferredSize(new Dimension(0, 30));
@@ -87,25 +85,24 @@ public class VentanaPrincipal extends JFrame {
         panelEstado.add(lblEstado);
         panelPrincipal.add(panelEstado, BorderLayout.SOUTH);
 
-        // --- Estado inicial de los botones ---
-        habilitarBotones(false); // Los deshabilita todos menos el de login
+        // Para tener todos los botones desactivados menos login
+        habilitarBotones(false); 
         
         setContentPane(panelPrincipal);
     }
 
     private JButton crearBoton(String texto, Color color) {
         JButton boton = new JButton(texto);
-        boton.setFont(new Font("Arial", Font.BOLD, 14)); // Tamaño ajustado
+        boton.setFont(new Font("Arial", Font.BOLD, 14)); 
         boton.setBackground(color);
         boton.setForeground(Color.WHITE);
         boton.setFocusPainted(false);
         boton.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        // Corregido: mouseEtered -> mouseEntered
+        //añadimos algun listener con los botones
         boton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                // Solo oscurece si el botón está habilitado
                 if (boton.isEnabled()) {
                     boton.setBackground(color.darker());
                 }
@@ -120,10 +117,10 @@ public class VentanaPrincipal extends JFrame {
 
     private void configurarEventos() {
         
-        // Evento para el nuevo botón de login
+        //para el botón de login
         btnInicioSesion.addActionListener(e -> solicitarInicioSesion());
 
-        // Eventos para los botones de gestión
+        //para los botones de gestión
         btnPeliculas.addActionListener(new ActionListener() {
 			
 			@Override
@@ -139,25 +136,22 @@ public class VentanaPrincipal extends JFrame {
         btnReportes.addActionListener(e -> abrirReportes());
     }
 
-    /**
-     * Lógica de inicio de sesión (adaptada de tu NombreWindow)
-     * ¡SIN CONEXIÓN A BD TODAVÍA!
-     */
+   //Aqui habra que meter ya la base de datos...
     private void solicitarInicioSesion() {
         String nombreCompleto = JOptionPane.showInputDialog(this, 
                 "Introduce tu nombre y apellido para las reservas:", 
                 "Inicio de Sesión", 
                 JOptionPane.PLAIN_MESSAGE);
 
-        // Verificamos que el usuario no ha pulsado "Cancelar" o ha dejado el campo vacío
+       
         if (nombreCompleto != null && !nombreCompleto.trim().isEmpty()) {
             
-            // Usamos tu misma lógica para validar nombre + apellido
+            
             String[] partesNombre = nombreCompleto.trim().split("\\s+", 2);
             
             if (partesNombre.length == 2) {
                 // Éxito
-                this.usuarioLogueado = partesNombre[0]; // Guardamos el nombre
+                this.usuarioLogueado = partesNombre[0]; 
                 
                 JOptionPane.showMessageDialog(this, 
                     "¡Bienvenido/a, " + this.usuarioLogueado + "!", 
@@ -165,7 +159,7 @@ public class VentanaPrincipal extends JFrame {
                     JOptionPane.INFORMATION_MESSAGE);
                 
                 lblEstado.setText("Usuario: " + nombreCompleto);
-                habilitarBotones(true); // Habilita los botones de gestión
+                habilitarBotones(true); //se desbloquean los botones 
 
             } else {
                 // Error: Formato incorrecto
@@ -181,24 +175,21 @@ public class VentanaPrincipal extends JFrame {
                     "Error", 
                     JOptionPane.WARNING_MESSAGE);
         }
-        // Si (nombreCompleto == null), el usuario pulsó "Cancelar", no hacemos nada.
+       
     }
 
-    /**
-     * Habilita o deshabilita los botones de gestión.
-     * @param habilitar true para habilitar, false para deshabilitar.
-     */
+  
     private void habilitarBotones(boolean habilitar) {
         btnPeliculas.setEnabled(habilitar);
         btnSalas.setEnabled(habilitar);
         btnVentas.setEnabled(habilitar);
         btnReportes.setEnabled(habilitar);
 
-        // El botón de login tiene la lógica inversa
+        
         btnInicioSesion.setEnabled(!habilitar);
     }
     
-    // --- Métodos de acción (los que ya tenías) ---
+  
 
     private void abrirGestionPeliculas() {
         DialogoPeliculas dialogo = new DialogoPeliculas(this);
@@ -266,9 +257,9 @@ public class VentanaPrincipal extends JFrame {
             final String ADMIN_PASS = "admin";
             
             if (usuario.equals(ADMIN_USER) && password.equals(ADMIN_PASS)) {
-                return true; // Login correcto
+                return true; 
             } else {
-                // Error: Credenciales incorrectas
+              
                 JOptionPane.showMessageDialog(this, 
                     "Usuario o contraseña incorrectos.", 
                     "Acceso Denegado", 

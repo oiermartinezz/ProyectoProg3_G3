@@ -8,11 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-/**
- * Panel que muestra un carrusel de imágenes (slideshow) usando un hilo de
- * ejecución.
- * Basado en tu código de BienvenidaWindow.
- */
 public class PanelFotos extends JPanel {
 
     private static final long serialVersionUID = 1L;
@@ -45,8 +40,6 @@ public class PanelFotos extends JPanel {
         try {
             // getClass().getResource() busca el recurso en el classpath
             ImageIcon icono = new ImageIcon(getClass().getResource(imagenes[indiceImagen]));
-            
-            // Re-escalamos la imagen para que se ajuste (puedes cambiar 600x440)
             Image imagen = icono.getImage().getScaledInstance(600, 440, Image.SCALE_SMOOTH);
             
             lblFoto.setIcon(new ImageIcon(imagen));
