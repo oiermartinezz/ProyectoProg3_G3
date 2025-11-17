@@ -81,3 +81,4 @@ public class DialogoCarrito extends JDialog {
         dispose();
     }
 }
+//adaptado de un proyecto antiguo con un carrito parecido

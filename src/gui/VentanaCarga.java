@@ -39,3 +39,4 @@ public class VentanaCarga extends JWindow {
         progressBar.setValue(value);
     }
 }
+//Codigo adaptado de una correcion de codigo que teniamos hecha con Roberto.

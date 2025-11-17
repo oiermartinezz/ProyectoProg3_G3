@@ -108,3 +108,5 @@ public class DialogoSeleccionAsientos extends JDialog {
         return seleccionConfirmada ? asientosSeleccionados : null;
     }
 }
+//AYUDA DE IAg
+//PARA GENERAR LA SELCCION DE ASIENTOS MUCHO MAS VISIBLE Y FACIL DE ENTENDER CON LAS BUTACAS A MODO DE CASILLAS SELECCIONABLES.

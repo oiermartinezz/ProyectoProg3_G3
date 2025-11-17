@@ -278,3 +278,4 @@ public class VentanaPrincipal extends JFrame {
         return false; 
     }
 }
+//teniamos la idea de hacer el boton solo admin pero no sabiamos como llevarla a cabo

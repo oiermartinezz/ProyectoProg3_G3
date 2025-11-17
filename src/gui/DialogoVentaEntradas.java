@@ -6,9 +6,7 @@ import java.util.List;
 
 public class DialogoVentaEntradas extends JDialog {
 
-    /**
-	 * 
-	 */
+   
 	private static final long serialVersionUID = 1L;
     private JList<String> listaDias;
     private JList<String> listaPeliculas;
@@ -215,3 +213,5 @@ public class DialogoVentaEntradas extends JDialog {
         dispose(); 
     }
 }
+//ia
+//ayuda con los errores de spinner y gbc. 
