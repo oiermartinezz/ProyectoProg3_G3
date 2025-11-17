@@ -10,3 +10,5 @@ Hilos implementados en la barra de carga y rotacion de imagenes.
 Si quieres entrar en el gestor de peliculas tienes que poner usuario: admin, contraseña: admin. Asi podras crear, editar y eliminar peliculas a mano.
 
 La clase principal es: **/gui/VentanaPrincipal**
+
+https://github.com/oiermartinezz/ProyectoProg3_G3 link al repositorio
