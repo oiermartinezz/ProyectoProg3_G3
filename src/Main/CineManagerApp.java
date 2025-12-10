@@ -1,6 +1,7 @@
 package Main; 
 
 import javax.swing.SwingUtilities;
+import db.GestorBD;
 import gui.VentanaCarga;
 import gui.VentanaPrincipal;
 
@@ -16,6 +17,10 @@ public class CineManagerApp {
             @Override
             public void run() {
                 try {
+                	
+                	System.out.println("Iniciando conexión con Base de Datos...");
+                	new GestorBD();
+                	System.out.println("Base de Datos cargada correctamente.");
                     
                     for (int i = 0; i <= 100; i++) {
                         

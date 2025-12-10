@@ -19,6 +19,7 @@ public class Pelicula {
         this.duracionMinutos = duracionMinutos;
         this.calificacionEdad = calificacionEdad;
         this.sinopsis = sinopsis;
+        
     }
 
 

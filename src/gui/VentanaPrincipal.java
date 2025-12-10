@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import db.GestorBD;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -18,10 +19,13 @@ public class VentanaPrincipal extends JFrame {
     private JButton btnReportes;
     private JButton btnInicioSesion; 
     private JButton btnVerCarrito; // Botón del carrito
+    private GestorBD gestorBD;
+    
 
     private String usuarioLogueado = null; 
 
     public VentanaPrincipal() {
+    	this.gestorBD = new GestorBD();
         configurarVentana();
         inicializarComponentes();
         configurarEventos();
@@ -181,6 +185,8 @@ public class VentanaPrincipal extends JFrame {
             
             if (partesNombre.length == 2) {
                 this.usuarioLogueado = partesNombre[0]; 
+                System.out.println("INTENTANDO GUARDAR: " + nombreCompleto); // <--- CHIVATO 1
+                gestorBD.registrarInicioSesion(nombreCompleto);
                 JOptionPane.showMessageDialog(this, 
                     "¡Bienvenido/a, " + this.usuarioLogueado + "!", 
                     "Sesión Iniciada", 
@@ -224,10 +230,15 @@ public class VentanaPrincipal extends JFrame {
     }
     
     private void abrirReportes() {
-         JOptionPane.showMessageDialog(this, 
-                "Abriendo Reportes...", 
-                "Reportes y Estadísticas", 
-                JOptionPane.INFORMATION_MESSAGE);
+    	// 1. Primero pedimos contraseña de Administrador (por seguridad)
+        if (solicitarLoginAdmin()) {
+            
+            // 2. Creamos la ventana de reportes pasándole la conexión a la BD
+            DialogoReportes dialogo = new DialogoReportes(this, this.gestorBD);
+            
+            // 3. La mostramos
+            dialogo.setVisible(true);
+        }
     }
     
     private boolean solicitarLoginAdmin() {

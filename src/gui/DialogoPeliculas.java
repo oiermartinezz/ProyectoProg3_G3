@@ -1,11 +1,13 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.*;
+import java.awt.FlowLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.*;
-import domain.Pelicula; 
+import domain.Pelicula;
+import db.GestorBD; // Importamos BD
+
 public class DialogoPeliculas extends JDialog {
     
     private static final long serialVersionUID = 1L;
@@ -16,16 +18,16 @@ public class DialogoPeliculas extends JDialog {
     private JTable tablaPeliculas;
     private PeliculasTableModel modeloTabla;
     
+    // Necesitamos el gestor aquí para pasárselo al modelo
+    private GestorBD gestorBD; 
+    
     public DialogoPeliculas(JFrame parent) {
         super(parent, "Gestión de Películas", true);
+        this.gestorBD = new GestorBD();
+        
         configurarDialogo();
         inicializarComponentes();
         configurarEventos();
-        
-        //datos de prueba cambiar cuando haya csv/BD
-        //Esta claro que al cerrar la ventana los datos de la tabla se reinician a los de por defecto, esto no ocurrira
-        //cuando tengamos una BD, y los cambios queden guardados.
-        cargarDatosPrueba();
     }
     
     private void configurarDialogo() {
@@ -49,13 +51,11 @@ public class DialogoPeliculas extends JDialog {
         panelBusqueda.add(btnAgregar);
         
         JPanel panelCentral = new JPanel(new BorderLayout());
-        panelCentral.setBorder(BorderFactory.createTitledBorder("Lista de Películas"));
+        panelCentral.setBorder(BorderFactory.createTitledBorder("Lista de Películas (BD)"));
         
-
-        modeloTabla = new PeliculasTableModel();
+        modeloTabla = new PeliculasTableModel(gestorBD);
         tablaPeliculas = new JTable(modeloTabla);
         
-       //esta bien meter la tabla en un scrollPane asi tiene para moverse
         JScrollPane scrollPane = new JScrollPane(tablaPeliculas);
         panelCentral.add(scrollPane, BorderLayout.CENTER);
         
@@ -64,14 +64,12 @@ public class DialogoPeliculas extends JDialog {
         btnEliminar = new JButton("Eliminar");
         JButton btnCerrar = new JButton("Cerrar");
         
-        // Deshabilitar botones si no hay nada seleccionado
         btnEditar.setEnabled(false);
         btnEliminar.setEnabled(false);
         
         panelBotones.add(btnEditar);
         panelBotones.add(btnEliminar);
         panelBotones.add(btnCerrar);
-        
         
         btnCerrar.addActionListener(e -> dispose());
         
@@ -86,7 +84,7 @@ public class DialogoPeliculas extends JDialog {
         txtBusqueda.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                buscarPeliculas();
+                System.out.println("Buscando: " + txtBusqueda.getText());
             }
         });
         
@@ -94,7 +92,6 @@ public class DialogoPeliculas extends JDialog {
         btnEditar.addActionListener(e -> editarPelicula());
         btnEliminar.addActionListener(e -> eliminarPelicula());
 
-       //actionlistener para detectar cuando hacer¡s click en la tabla
         tablaPeliculas.getSelectionModel().addListSelectionListener(e -> {
             boolean haySeleccion = tablaPeliculas.getSelectedRow() != -1;
             btnEditar.setEnabled(haySeleccion);
@@ -102,26 +99,10 @@ public class DialogoPeliculas extends JDialog {
         });
     }
     
-    private void cargarDatosPrueba() {
-    	modeloTabla.agregarPelicula(new Pelicula(3, "Los Williams", "Documental", 109, "PG-3", ""));
-        modeloTabla.agregarPelicula(new Pelicula(1, "Dune 2", "Ciencia Ficción", 166, "PG-13", ""));
-        modeloTabla.agregarPelicula(new Pelicula(2, "Barbie", "Comedia", 114, "PG-13", ""));
-        modeloTabla.agregarPelicula(new Pelicula(2, "Barbie", "Comedia", 114, "PG-13", ""));
-    }
-
-    private void buscarPeliculas() {
-        
-        System.out.println("Buscando: " + txtBusqueda.getText());
-    }
-    
-   
-
     private void agregarPelicula() {
-        
         DialogoFormularioPelicula formulario = new DialogoFormularioPelicula(this, null);
         formulario.setVisible(true);
 
-       
         if (formulario.isGuardado()) {
             Pelicula nuevaPeli = formulario.getPelicula();
             modeloTabla.agregarPelicula(nuevaPeli);
@@ -131,15 +112,12 @@ public class DialogoPeliculas extends JDialog {
     private void editarPelicula() {
         int fila = tablaPeliculas.getSelectedRow();
         if (fila == -1) return; 
-
         
         Pelicula peliSeleccionada = modeloTabla.getPeliculaAt(fila);
 
-       
         DialogoFormularioPelicula formulario = new DialogoFormularioPelicula(this, peliSeleccionada);
         formulario.setVisible(true);
-
-       
+        
         if (formulario.isGuardado()) {
             modeloTabla.actualizarFila(fila);
         }
@@ -152,8 +130,8 @@ public class DialogoPeliculas extends JDialog {
         Pelicula peli = modeloTabla.getPeliculaAt(fila);
         
         int confirmacion = JOptionPane.showConfirmDialog(this,
-            "¿Seguro que quieres borrar '" + peli.getTitulo() + "'?",
-            "Confirmar",
+            "¿Seguro que quieres borrar '" + peli.getTitulo() + "' de la Base de Datos?",
+            "Confirmar Borrado",
             JOptionPane.YES_NO_OPTION);
             
         if (confirmacion == JOptionPane.YES_OPTION) {

@@ -1,19 +1,24 @@
 package gui;
 
+
+
 import javax.swing.table.AbstractTableModel;
-import domain.Pelicula; 
-import java.util.ArrayList;
+import domain.Pelicula;
+import db.GestorBD; // Importamos el gestor
 import java.util.List;
 
 public class PeliculasTableModel extends AbstractTableModel {
 
-	private static final long serialVersionUID = 1L;
-	
+    private static final long serialVersionUID = 1L;
+    
     private final String[] columnNames = {"ID", "Título", "Género", "Duración (min)", "Calificación"};
     private List<Pelicula> peliculas;
+    private GestorBD gestorBD; // Referencia a la base de datos
 
-    public PeliculasTableModel() {
-        this.peliculas = new ArrayList<>();
+    public PeliculasTableModel(GestorBD gestorBD) {
+        this.gestorBD = gestorBD;
+        // Al arrancar, cargamos la lista REAL desde la BD
+        this.peliculas = gestorBD.obtenerPeliculas();
     }
 
     @Override
@@ -44,23 +49,32 @@ public class PeliculasTableModel extends AbstractTableModel {
         }
     }
 
-    //Metodos para editar peliculas
+
     public void agregarPelicula(Pelicula p) {
-        peliculas.add(p);
-        fireTableRowsInserted(peliculas.size() - 1, peliculas.size() - 1); 
+        gestorBD.agregarPelicula(p);
+        this.peliculas = gestorBD.obtenerPeliculas();
+        fireTableDataChanged(); 
     }
 
     public void eliminarPelicula(int rowIndex) {
+        Pelicula p = peliculas.get(rowIndex);
+        gestorBD.borrarPelicula(p.getId());
         peliculas.remove(rowIndex);
         fireTableRowsDeleted(rowIndex, rowIndex); 
+    }
+    
+    public void actualizarFila(int rowIndex) {
+
+        Pelicula p = peliculas.get(rowIndex);
+        gestorBD.actualizarPelicula(p);
+        fireTableRowsUpdated(rowIndex, rowIndex);
     }
 
     public Pelicula getPeliculaAt(int rowIndex) {
         return peliculas.get(rowIndex);
     }
-    
-   
-    public void actualizarFila(int rowIndex) {
-        fireTableRowsUpdated(rowIndex, rowIndex);
+    public void refrescarDatos() {
+        this.peliculas = gestorBD.obtenerPeliculas();
+        fireTableDataChanged();
     }
 }
