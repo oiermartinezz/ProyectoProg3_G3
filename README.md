@@ -11,6 +11,8 @@ Si haces click en Venta de entradas podras seleccionar de una lista de dias que 
 
 Hilos implementados en la barra de carga inicial y rotacion de imagenes en la portada.
 
+La base de datos esta incluida para Guardar todas las peliculas del cine, asi como poder eliminarlas y editarlas permanentemente y que estos cambios se vean reflejados. Tambien ha sido incluida en los inicios de sesion, donde haciendo click en el boton Reportes tienes un listado de los usuarios que han entrado en la app, con hora y fecha de entrada. (Para este boton tambien es necesaria la cuenta con nombre admin, y contraseña admin.
+
 La clase principal es: **/gui/VentanaPrincipal**
 
 https://github.com/oiermartinezz/ProyectoProg3_G3 <-- **link al repositorio**
