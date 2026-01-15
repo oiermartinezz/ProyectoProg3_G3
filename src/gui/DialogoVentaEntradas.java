@@ -16,6 +16,7 @@ public class DialogoVentaEntradas extends JDialog {
     private JLabel lblTotal;
     private JButton btnSeleccionarAsientos;
     private JButton btnAnadirCarrito;
+    private JButton btnComprobarHorarios;
 
     //DATOS
     private DefaultListModel<String> modeloPeliculas;
@@ -104,6 +105,15 @@ public class DialogoVentaEntradas extends JDialog {
         btnSeleccionarAsientos.setBackground(Color.ORANGE);
         btnSeleccionarAsientos.setEnabled(false); // Deshabilitado hasta elegir peli
         panelDer.add(btnSeleccionarAsientos, gbc);
+        
+        
+        // Botón Comprobar Horarios 
+         gbc.gridy++;
+         btnComprobarHorarios = new JButton("Hacer Maratón de Peliculas");
+         btnComprobarHorarios.setBackground(new Color(46, 204, 113));
+         btnComprobarHorarios.setForeground(Color.BLACK);
+         btnComprobarHorarios.setToolTipText("Introduce hora entrada/salida y calcula qué puedes ver");
+         panelDer.add(btnComprobarHorarios, gbc);
 
 
         //carrito
@@ -148,7 +158,39 @@ public class DialogoVentaEntradas extends JDialog {
         
         btnSeleccionarAsientos.addActionListener(e -> abrirSelectorAsientos());
         btnAnadirCarrito.addActionListener(e -> enviarAlCarrito());
-    }
+    
+
+    btnComprobarHorarios.addActionListener(e -> {
+        // Pedir horas en formato HH:mm
+        String entradaText = JOptionPane.showInputDialog(this, "Hora de entrada (HH:mm)", "16:00");
+        if (entradaText == null) return; // cancelado
+
+        String salidaText = JOptionPane.showInputDialog(this, "Hora de salida (HH:mm)", "22:00");
+        if (salidaText == null) return; // cancelado
+
+        try {
+            int entradaMin = convertirHoraAMinutos(entradaText);
+            int salidaMin = convertirHoraAMinutos(salidaText);
+
+            if (salidaMin <= entradaMin) {
+                JOptionPane.showMessageDialog(this, "La hora de salida debe ser posterior a la de entrada.");
+                return;
+            }
+
+            int nHoras = comboHoras.getItemCount();
+            String[] horasArr = new String[nHoras];
+            for (int i = 0; i < nHoras; i++) {
+                horasArr[i] = comboHoras.getItemAt(i);
+            }
+
+            // Llamada al método recursivo que muestra el resultado
+            peliculasPosiblesRecursivo(modeloPeliculas, horasArr, entradaMin, salidaMin, 0, "");
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Formato de hora inválido. Usa HH:mm (p. ej. 18:30)");
+        }
+    });
+
+  }
 
     private void cargarPeliculas(String dia) {
         modeloPeliculas.clear();
@@ -212,6 +254,62 @@ public class DialogoVentaEntradas extends JDialog {
         JOptionPane.showMessageDialog(this, "Añadido al carrito correctamente.");
         dispose(); 
     }
+    
+ // METODO RECURSIVO: Combinacion de peliculas por horario
+ 	 private void peliculasPosiblesRecursivo(
+ 	         DefaultListModel<String> modelo,
+ 	         String[] horas,
+ 	         int horaEntrada,
+ 	         int horaSalida,
+ 	         int indice,
+ 	         String resultado) {
+ 	
+ 	     // Caso base: no hay más películas
+ 	     if (indice == modelo.size()) {
+ 	         if (!resultado.isEmpty()) {
+ 	             JOptionPane.showMessageDialog(
+ 	                     this,
+ 	                     "Películas que puedes ver:\n" + resultado
+ 	             );
+ 	         } else {
+ 	             JOptionPane.showMessageDialog(
+ 	                     this,
+ 	                     "No puedes ver ninguna película completa en ese horario."
+ 	             );
+ 	         }
+ 	         return;
+ 	     }
+ 	
+ 	     String horaTexto = horas.length > 0 ? horas[indice % horas.length] : "00:00";
+ 	     int horaInicio = convertirHoraAMinutos(horaTexto);
+ 	     int duracion = 150; // duración fija 
+ 	     int horaFin = horaInicio + duracion;
+
+ 	     if (horaInicio >= horaEntrada && horaFin <= horaSalida) {
+ 	         resultado += "- " + modelo.get(indice) + " (" + horaTexto + ")\n";
+ 	     }
+ 	
+ 	     // Llamada recursiva
+ 	     peliculasPosiblesRecursivo(modelo, horas, horaEntrada, horaSalida, indice + 1, resultado);
+ 	 }
+ 	
+ 	 // MÉTODO AUXILIAR: convierte strings como "23:00 (V.O)" o "18:30" a minutos desde 00:00
+ 	 private int convertirHoraAMinutos(String hora) {
+ 	     if (hora == null) throw new NumberFormatException();
+ 	
+ 	     String limpia = hora.trim();
+ 	     // intentamos tomar los primeros 5 caracteres si existen (formato HH:mm)
+ 	     if (limpia.length() >= 5) {
+ 	         limpia = limpia.substring(0, 5);
+ 	     }
+ 	
+ 	     String[] partes = limpia.split(":");
+ 	     if (partes.length < 2) throw new NumberFormatException();
+ 	
+ 	     int h = Integer.parseInt(partes[0].trim());
+ 	     int m = Integer.parseInt(partes[1].trim());
+ 	     return h * 60 + m;
+ 	 }
 }
 //ia
 //ayuda con los errores de spinner y gbc. 
